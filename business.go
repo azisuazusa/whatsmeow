@@ -8,12 +8,12 @@
 package whatsmeow
 
 import (
-	"encoding/xml"
 	"bytes"
+	"encoding/xml"
+
 	waBinary "go.mau.fi/whatsmeow/binary"
 	"go.mau.fi/whatsmeow/types"
 )
-
 
 type OrderDetailType struct {
 	Order struct {
@@ -23,13 +23,13 @@ type OrderDetailType struct {
 			ID         string `xml:"id"`
 			RetailerID string `xml:"retailer_id"`
 			ImageUrl   string `xml:"image>url"`
-			Price    string `xml:"price"`
-			Currency string `xml:"currency"`
-			Name     string `xml:"name"`
-			Quantity string `xml:"quantity"`
+			Price      string `xml:"price"`
+			Currency   string `xml:"currency"`
+			Name       string `xml:"name"`
+			Quantity   string `xml:"quantity"`
 		} `xml:"product"`
 		Catalog struct {
-			ID   string `xml:"id"`
+			ID string `xml:"id"`
 		} `xml:"catalog"`
 		Price struct {
 			Subtotal    string `xml:"subtotal"`
@@ -38,7 +38,7 @@ type OrderDetailType struct {
 			PriceStatus string `xml:"price_status"`
 		} `xml:"price"`
 	} `xml:"order"`
-} 
+}
 
 func (cli *Client) GetOrderDetails(orderId, tokenBase64 string) (*OrderDetailType, error) {
 
@@ -79,13 +79,18 @@ func (cli *Client) GetOrderDetails(orderId, tokenBase64 string) (*OrderDetailTyp
 			},
 		},
 	})
-	
+	if err != nil {
+		cli.Log.Errorf("Order Details response Error: %v", err)
+		return nil, err
+	}
+
 	OrderDetail := &OrderDetailType{}
 	d := xml.NewDecoder(bytes.NewReader([]byte(detailsNode.XMLString())))
 	d.Strict = false
 	err = d.Decode(&OrderDetail)
 	if err != nil {
-		cli.Log.Infof("Order Details response Error: %v",err)
+		cli.Log.Errorf("Order Details response Error: %v", err)
+		return nil, err
 	}
 
 	return OrderDetail, err
