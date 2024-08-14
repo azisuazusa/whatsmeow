@@ -81,7 +81,6 @@ func (cli *Client) GetOrderDetails(orderId, tokenBase64 string) (*OrderDetailTyp
 	})
 	if err != nil {
 		cli.Log.Errorf("Order Details response Error: %v", err)
-		return nil, err
 	}
 
 	OrderDetail := &OrderDetailType{}
@@ -90,7 +89,6 @@ func (cli *Client) GetOrderDetails(orderId, tokenBase64 string) (*OrderDetailTyp
 	err = d.Decode(&OrderDetail)
 	if err != nil {
 		cli.Log.Errorf("Order Details response Error: %v", err)
-		return nil, err
 	}
 
 	return OrderDetail, err
