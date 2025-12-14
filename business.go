@@ -9,6 +9,7 @@ package whatsmeow
 
 import (
 	"bytes"
+	"context"
 	"encoding/xml"
 
 	waBinary "go.mau.fi/whatsmeow/binary"
@@ -40,13 +41,13 @@ type OrderDetailType struct {
 	} `xml:"order"`
 }
 
-func (cli *Client) GetOrderDetails(orderId, tokenBase64 string) (*OrderDetailType, error) {
+func (cli *Client) GetOrderDetails(ctx context.Context, orderId, tokenBase64 string) (*OrderDetailType, error) {
 
-	detailsNode, err := cli.sendIQ(infoQuery{
+	detailsNode, err := cli.sendIQ(ctx, infoQuery{
 		Namespace: "fb:thrift_iq",
 		Type:      "get",
 		To:        types.ServerJID,
-		SmaxId:    "5",
+		SMaxID:    "5",
 		Content: []waBinary.Node{
 			{
 				Tag: "order",
